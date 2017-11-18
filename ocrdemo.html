@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>OCR demo</title>
+	<script src="tesseract.js"></script>
+	<script src="jquery-3.0.0.min.js"></script>
+</head>
+<body>
+
+	<input type="text" id="url" placeholder="Image URL" />
+	<input type="button" id="go_button" value="Run" />
+	<img src="" id="image">
+	<div id="ocr_results"> </div>
+	<div id="ocr_status"> </div>
+
+</body>
+
+<script type="text/javascript">
+	function runOCR(url)
+	 {
+	    Tesseract.recognize(url).then(function(result)
+	     {
+	            document.getElementById("ocr_results").innerText = result.text;
+	         }).progress(function(result) {
+	            document.getElementById("ocr_status").innerText = result["status"] + " (" +(result["progress"] * 100) + "%)";
+	        });
+
+	}
+	function findUrls( text )
+	{
+    var source = (text || '').toString();
+    var urlArray = [];
+    var url;
+    var matchArray;
+
+    var regexToken = /(((ftp|https?):\/\/)[\-\w@:%_\+.~#?,&\/\/=]+)|((mailto:)?[_.\w-]+@([\w][\w\-]+\.)+[a-zA-Z]{2,3})/g;
+    while( (matchArray = regexToken.exec( source )) !== null )
+    {
+        var token = matchArray[0];
+        urlArray.push( token );
+    }
+
+    return urlArray;
+}
+
+ document.getElementById("go_button").addEventListener("click", function(e) {
+           	var url = document.getElementById("url").value;
+            runOCR(url);
+        });
+</script>
+
+</html>
